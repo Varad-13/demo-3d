@@ -1,110 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>3D Model Viewer Demo</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            background: #222;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background: #777777;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-        }
-        .progress-bar {
-            position: absolute;
-            width: 100%;
-            height: 4px;
-            background: rgba(0,0,0,0.1);
-            top: 0;
-            left: 0;
-            display: flex;
-            align-items: center;
-        }
-        .update-bar {
-            height: 100%;
-            background: #4285f4;
-            width: 0;
-            transition: width 0.3s;
-        }
-        .hide {
-            display: none;
-        }
-        #ar-button {
-            background: #4285f4;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 16px 0;
-        }
-        #ar-prompt {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background: rgba(255,255,255,0.9);
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        #ar-prompt img {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
-        }
-    </style>
-</head>
-<body>
-    <model-viewer 
-        src="replicate-prediction-k8zdq35bp1rj00cscvhs174sqw.glb"
-        ar 
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls 
-        tone-mapping="neutral"
-        poster="poster.webp"
-        shadow-intensity="1"
-        style="position: relative;"
-    >
-        <div class="progress-bar hide" slot="progress-bar">
-            <div class="update-bar"></div>
-        </div>
-        <button slot="ar-button" id="ar-button">
-            View in your space
-        </button>
-        <div id="ar-prompt" slot="ar-prompt">
-            <img src="https://modelviewer.dev/shared-assets/icons/hand.png" alt="AR Prompt">
-            Move your device to view in AR
-        </div>
-    </model-viewer>
-    <script>
-        const modelViewer = document.querySelector('model-viewer');
-        const progressBar = modelViewer.querySelector('.progress-bar');
-        const updateBar = modelViewer.querySelector('.update-bar');
-
-        modelViewer.addEventListener('progress', (event) => {
-            const progress = event.detail.totalProgress;
-            updateBar.style.width = `${progress * 100}%`;
-            if (progress < 1) {
-                progressBar.classList.remove('hide');
-            } else {
-                progressBar.classList.add('hide');
-            }
-        });
-    </script>
-</body>
+  <head>
+    <title>&lt;model-viewer&gt; template</title>
+    <meta charset="utf-8">
+    <meta name="description" content="&lt;model-viewer&gt; template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" href="./styles.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <!-- <model-viewer> HTML element -->
+    <model-viewer src="replicate-prediction-fzhck7wdp9rj00cscxtr9sy6p8.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+      <div class="progress-bar hide" slot="progress-bar">
+          <div class="update-bar"></div>
+      </div>
+      <button slot="ar-button" id="ar-button">
+          View in your space
+      </button>
+      <div id="ar-prompt">
+          <img src="ar_hand_prompt.png">
+      </div>
+    </model-viewer>  
+    <script src="script.js"></script>
+    <!-- Loads <model-viewer> for browsers: -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  </body>
 </html>
