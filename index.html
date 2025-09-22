@@ -1,27 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>&lt;model-viewer&gt; template</title>
-    <meta charset="utf-8">
-    <meta name="description" content="&lt;model-viewer&gt; template">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" href="./styles.css" rel="stylesheet"/>
-  </head>
-  <body>
-    <!-- <model-viewer> HTML element -->
-    <model-viewer src="replicate-prediction-fzhck7wdp9rj00cscxtr9sy6p8.glb" ar ar-modes="scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
-      <div class="progress-bar hide" slot="progress-bar">
-          <div class="update-bar"></div>
+<head>
+  <title>Furniture Product - POC</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Model Viewer -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body class="bg-white text-gray-900">
+
+  <!-- Main Container -->
+  <div class="flex flex-col md:flex-row h-screen">
+
+    <!-- LEFT SIDE: 3D + thumbnails -->
+    <div class="flex-1 flex flex-col items-center justify-center p-4">
+      
+      <!-- Main Viewer (3D or Image) -->
+      <div id="viewer-container" class="relative w-full h-[60vh] md:h-[80vh]">
+        <model-viewer
+          id="main-viewer"
+          src="replicate-prediction-fzhck7wdp9rj00cscxtr9sy6p8.glb"
+          ar
+          ar-modes="scene-viewer quick-look"
+          camera-controls
+          tone-mapping="neutral"
+          shadow-intensity="1"
+          class="w-full h-full rounded-xl bg-gray-100 shadow-md">
+        </model-viewer>
+
+        <!-- Zoom Icon -->
+        <button onclick="openZoom()"
+          class="absolute top-3 right-3 bg-white text-black px-2 py-2 rounded-full shadow hover:bg-gray-200">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M120-120v-240h80v104l124-124 56 56-124 124h104v80H120Zm516-460-56-56 124-124H600v-80h240v240h-80v-104L636-580Z"/></svg>
+        </button>
       </div>
-      <button slot="ar-button" id="ar-button">
-          View in your space
-      </button>
-      <div id="ar-prompt">
-          <img src="ar_hand_prompt.png">
+
+      <!-- Thumbnail Images -->
+      <div class="flex gap-3 mt-4 overflow-x-auto">        
+        <!-- Image thumbs -->
+        <img src="WhatsApp Image 2025-09-20 at 19.42.57_cea74df6.jpg" 
+             alt="Product thumb" 
+             class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
+             onclick="show3D()">
+        <img src="cc9828d22e1fd99f8e5e4a9173d24d90.jpg" 
+             alt="Product thumb" 
+             class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
+             onclick="swapToImage(this.src)">
+        <img src="WhatsApp Image 2025-09-20 at 19.42.57_655f9aaa.jpg" 
+             alt="Product thumb" 
+             class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
+             onclick="swapToImage(this.src)">
+        <img src="WhatsApp Image 2025-09-20 at 19.42.57_a9bbe694.jpg" 
+             alt="Product thumb" 
+             class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
+             onclick="swapToImage(this.src)">
       </div>
-    </model-viewer>  
-    <script src="script.js"></script>
-    <!-- Loads <model-viewer> for browsers: -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-  </body>
+    </div>
+
+    <!-- RIGHT SIDE: Product Info -->
+    <div class="flex-1 flex flex-col justify-center p-6 bg-gray-50">
+      <h1 class="text-3xl font-bold mb-3">Modern Wooden Chair</h1>
+      <p class="text-gray-600 mb-6">A sleek, minimalistic wooden chair designed for comfort and style. 
+        Experience it in 3D and preview in AR on your device.</p>
+
+      <div class="text-2xl font-semibold mb-6">₹7,499</div>
+
+      <ul class="list-disc list-inside text-gray-700 space-y-2 mb-8">
+        <li>Solid oak wood construction</li>
+        <li>Ergonomic design for comfort</li>
+        <li>Available in multiple finishes</li>
+        <li>AR preview available</li>
+      </ul>
+
+      <div class="flex gap-4">
+        <button class="flex-1 px-6 py-3 bg-black text-white text-lg rounded-md hover:bg-gray-800">Add to Cart</button>
+        <button class="flex-1 px-6 py-3 border border-gray-300 text-lg rounded-md hover:bg-gray-200">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Overlay -->
+  <div id="zoom-overlay" class="hidden fixed inset-0 bg-white z-50 flex justify-center items-center">
+    <div id="zoom-content" class="w-full h-full flex justify-center items-center"></div>
+    <button onclick="closeZoom()" 
+      class="absolute top-5 right-5 bg-white text-black px-4 py-2 rounded-md shadow">
+      Close
+    </button>
+  </div>
+
+  <script>
+    let currentMode = "3d"; // track if showing 3d or image
+
+    // Show 3D model
+    function show3D() {
+      const container = document.getElementById("viewer-container");
+      container.innerHTML = `
+        <model-viewer
+          id="main-viewer"
+          src="replicate-prediction-fzhck7wdp9rj00cscxtr9sy6p8.glb"
+          ar
+          ar-modes="scene-viewer quick-look"
+          camera-controls
+          tone-mapping="neutral"
+          shadow-intensity="1"
+          class="w-full h-full rounded-xl bg-gray-100 shadow-md">
+        </model-viewer>
+        <button onclick="openZoom()" class="absolute top-3 right-3 bg-white text-black px-2 py-2 rounded-full shadow hover:bg-gray-200">🔍</button>
+      `;
+      currentMode = "3d";
+    }
+
+    // Swap to image
+    function swapToImage(src) {
+      const container = document.getElementById("viewer-container");
+      container.innerHTML = `
+        <img id="main-viewer" src="${src}" class="w-full h-[60vh] md:h-[80vh] object-cover rounded-xl shadow-md">
+        <button onclick="openZoom()" class="absolute top-3 right-3 bg-white text-black px-2 py-2 rounded-full shadow hover:bg-gray-200">🔍</button>
+      `;
+      currentMode = "image";
+      currentImage = src;
+    }
+
+    // Open Zoom overlay
+    let currentImage = null;
+    function openZoom() {
+      const overlay = document.getElementById("zoom-overlay");
+      const content = document.getElementById("zoom-content");
+      overlay.classList.remove("hidden");
+
+      if (currentMode === "3d") {
+        content.innerHTML = `
+          <model-viewer
+            src="replicate-prediction-fzhck7wdp9rj00cscxtr9sy6p8.glb"
+            ar
+            camera-controls
+            shadow-intensity="1"
+            class="w-full h-full">
+          </model-viewer>
+        `;
+      } else if (currentMode === "image") {
+        content.innerHTML = `<img src="${currentImage}" class="max-h-full max-w-full object-contain rounded-lg shadow-lg">`;
+      }
+    }
+
+    // Close Zoom overlay
+    function closeZoom() {
+      document.getElementById("zoom-overlay").classList.add("hidden");
+    }
+  </script>
+</body>
 </html>
