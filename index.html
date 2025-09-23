@@ -41,11 +41,15 @@
 
       <!-- Thumbnail Images -->
       <div class="flex gap-3 mt-4 overflow-x-auto">        
-        <!-- Image thumbs -->
+        <!-- First thumb triggers 3D -->
+        <div class="w-20 h-20 flex items-center justify-center border rounded-md cursor-pointer hover:border-black"
+             onclick="show3D()">
+          <span class="text-sm font-semibold">3D</span>
+        </div>
         <img src="WhatsApp Image 2025-09-20 at 19.42.57_cea74df6.jpg" 
              alt="Product thumb" 
              class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
-             onclick="show3D()">
+             onclick="swapToImage(this.src)">
         <img src="cc9828d22e1fd99f8e5e4a9173d24d90.jpg" 
              alt="Product thumb" 
              class="w-20 h-20 object-cover rounded-md cursor-pointer border hover:border-black"
@@ -93,7 +97,8 @@
   </div>
 
   <script>
-    let currentMode = "3d"; // track if showing 3d or image
+    let currentMode = "3d"; 
+    let currentImage = null;
 
     // Show 3D model
     function show3D() {
@@ -130,7 +135,6 @@
     }
 
     // Open Zoom overlay
-    let currentImage = null;
     function openZoom() {
       const overlay = document.getElementById("zoom-overlay");
       const content = document.getElementById("zoom-content");
@@ -156,6 +160,19 @@
     function closeZoom() {
       document.getElementById("zoom-overlay").classList.add("hidden");
     }
+
+    // Auto AR trigger via query param
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("ar") === "1") {
+        const viewer = document.getElementById("main-viewer");
+        if (viewer && viewer.canActivateAR) {
+          viewer.activateAR();
+        } else {
+          openZoom();
+        }
+      }
+    });
   </script>
 </body>
 </html>
